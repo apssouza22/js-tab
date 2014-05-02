@@ -1,33 +1,37 @@
 /**
  *Sistema de navegação entre abas 
  **/
-var Tab = function(options){
+var Tab = function(options) {
+		var publicMethods = {};
+		var $tabNavigation,
+				$boxContents;
 
-	var settings = {},
-
-	optDefault = {
-		cssClassItemSelected : 'selected',
-		selectorTab	: '.abas a',
-		selectorBoxContents	: '.aba_content'
-	}
-
-	settings = $.extend( {}, optDefault, options );
-	$boxContent = $(settings.selectorBoxContents);
-	$boxContent.hide();
-	
-	var navigate = function(e){
-		e.preventDefault();
-		$boxContent.hide();
-		$boxContent.filter(this.hash).fadeIn();
-		$(settings.selectorTab).removeClass(settings.cssClassItemSelected);
-		$(this).addClass(settings.cssClassItemSelected);
-		if(this.hash.indexOf('#') >=0 ){
-			location.href = this.hash.replace(/_/g,'-');
+		var defaultOptions = {
+			cssClassSelected: '.selected',
+			tabNavigation: ".tab-navigation",
+			tabSelected: ':first',
+			boxContents: '.tab-content'
 		}
-	}
-	
-	$(settings.selectorTab).click(navigate)
-		.filter(':first').click();
-}
+		var settings = $.extend({}, defaultOptions, options);
 
+		function changeTab()
+		{
+			$boxContents.hide().filter(this.hash).show();
+			$tabNavigation.removeClass(settings.cssClassSelected);
+			$(this).addClass(settings.cssClassSelected);
+			return false;
+		}
+
+		publicMethods.init = function() {
+			$tabNavigation = $(settings.tabNavigation);
+			$boxContents = $(settings.boxContents);
+
+			$(settings.tabNavigation).click(changeTab)
+					.filter(settings.tabSelected)
+					.click();
+		};
+
+		return publicMethods;
+
+	}
 
